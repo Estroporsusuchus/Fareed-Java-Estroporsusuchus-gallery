@@ -1,279 +1,92 @@
-// Gallery initialization
-const GITHUB_OWNER = 'Fareed-Java';
-const GITHUB_REPO = 'Fareed-Java-Estroporsusuchus-gallery';
-const GITHUB_BRANCH = 'main';
-const IMAGE_ROOT = 'images';
-
-function isImageFile(name) {
-    return /\.(jpe?g|png|gif|webp)$/i.test(name);
+'use strict';
+const $ = s => document.querySelector(s);
+const batch = 24;
+let works = [], shown = 0, current = 0, opener;
+const dialog = $('#lightbox'), full = $('#full-image');
+function appendBatch() {
+  const fragment = document.createDocumentFragment();
+  const end = Math.min(shown + batch, works.length);
+  for (let i = shown; i < end; i++) {
+    const art = works[i], button = document.createElement('button'), img = document.createElement('img');
+    button.className = 'art-card'; button.type = 'button';
+    button.setAttribute('aria-label', `查看第 ${i + 1} 张画作`);
+    img.width = art.thumb.width; img.height = art.thumb.height;
+    img.alt = art.alt; img.loading = i < 3 ? 'eager' : 'lazy'; img.decoding = 'async';
+    img.srcset = art.small.width < art.thumb.width ? `${art.small.src} ${art.small.width}w, ${art.thumb.src} ${art.thumb.width}w` : `${art.thumb.src} ${art.thumb.width}w`;
+    img.sizes = '(max-width: 480px) 90vw, (max-width: 800px) 44vw, 30vw'; img.src = art.thumb.src;
+    const caption = document.createElement('span'); caption.className = 'art-caption';
+    const number = document.createElement('span'); number.textContent = String(i + 1).padStart(3, '0');
+    const hint = document.createElement('span'); hint.textContent = '查看画作 ↗'; caption.append(number, hint);
+    button.append(img, caption); button.addEventListener('click', () => openArt(i, button));
+    fragment.append(button);
+  }
+  $('#gallery').append(fragment); shown = end;
+  $('#more').hidden = shown >= works.length;
+  $('#progress').textContent = works.length ? `已展示 ${shown} / ${works.length} 张` : '';
 }
-
-async function fetchImagesFromGitHub() {
-    const apiRoot = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${IMAGE_ROOT}?ref=${GITHUB_BRANCH}`;
-    const response = await fetch(apiRoot);
-    if (!response.ok) {
-        throw new Error(`GitHub API root request failed (${response.status})`);
-    }
-
-    const entries = await response.json();
-    const imageEntries = [];
-    const folders = entries.filter(entry => entry.type === 'dir');
-
-    await Promise.all(folders.map(async folder => {
-        const dirResponse = await fetch(`${folder.url}?ref=${GITHUB_BRANCH}`);
-        if (!dirResponse.ok) return;
-
-        const files = await dirResponse.json();
-        files.forEach(file => {
-            if (file.type === 'file' && isImageFile(file.name)) {
-                imageEntries.push({
-                    src: file.name,
-                    folder: `${folder.path}/`
-                });
-            }
-        });
-    }));
-
-    return imageEntries;
+async function loadGallery() {
+  $('#retry').hidden = true; $('#status').textContent = '画作加载中…';
+  try {
+    const response = await fetch('images.json');
+    if (!response.ok) throw new Error('manifest');
+    const data = await response.json();
+    if (!Array.isArray(data) || data.some(x => !x.thumb?.src || !x.full?.src || !x.small?.src)) throw new Error('format');
+    works = data; shown = 0; $('#gallery').replaceChildren();
+    $('#count').textContent = `${works.length} 幅画作`;
+    $('#status').textContent = works.length ? '' : '新的故事，即将在这里开始。'; appendBatch();
+  } catch {
+    $('#status').textContent = '暂时无法读取画作，请重试。'; $('#count').textContent = ''; $('#retry').hidden = false;
+  }
 }
-
-async function fetchImagesFromLocal() {
-    const baseUrl = '/images/';
-    const response = await fetch(baseUrl);
-    if (!response.ok) {
-        throw new Error(`Local directory request failed (${response.status})`);
-    }
-
-    const html = await response.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const links = Array.from(doc.querySelectorAll('a'));
-    const folders = links
-        .map(a => a.getAttribute('href'))
-        .filter(href => href && href.endsWith('/') && href !== '../')
-        .map(href => href.slice(0, -1)); // remove trailing /
-
-    const imageEntries = [];
-    await Promise.all(folders.map(async folder => {
-        const folderUrl = `${baseUrl}${folder}/`;
-        const folderResponse = await fetch(folderUrl);
-        if (!folderResponse.ok) return;
-
-        const folderHtml = await folderResponse.text();
-        const folderDoc = parser.parseFromString(folderHtml, 'text/html');
-        const fileLinks = Array.from(folderDoc.querySelectorAll('a'));
-        fileLinks.forEach(a => {
-            const href = a.getAttribute('href');
-            if (href && isImageFile(href)) {
-                imageEntries.push({
-                    src: href,
-                    folder: `images/${folder}/`
-                });
-            }
-        });
-    }));
-
-    return imageEntries.sort((a, b) => {
-        const folderCompare = a.folder.localeCompare(b.folder, undefined, { sensitivity: 'base' });
-        return folderCompare || a.src.localeCompare(b.src, undefined, { sensitivity: 'base' });
-    });
+function showArt(index) {
+  current = (index + works.length) % works.length;
+  const art = works[current];
+  $('#image-status').textContent = '高清画作加载中…'; $('#image-retry').hidden = true;
+  full.hidden = true; full.alt = art.alt; full.src = art.full.src;
+  $('#image-position').textContent = `${current + 1} / ${works.length}`;
+  $('#download').href = art.full.src;
 }
-
-async function loadImages() {
-    let images = [];
-
-    try {
-        const localImages = await fetchImagesFromLocal();
-        images = localImages;
-        console.info('Local images scanned:', images.length);
-    } catch (error) {
-        console.warn('Failed to scan local images:', error);
-        // Fallback to images.json if local scan fails
-        try {
-            const response = await fetch(`images.json?v=${Date.now()}`);
-            if (response.ok) {
-                images = await response.json();
-                console.info('Fallback to images.json entries:', images.length);
-            }
-        } catch (fallbackError) {
-            console.warn('Failed to load images.json fallback:', fallbackError);
-        }
-    }
-
-    try {
-        const githubImages = await fetchImagesFromGitHub();
-        console.info('GitHub images fetched:', githubImages.length);
-        const seen = new Set(images.map(img => `${img.folder}${img.src}`));
-        githubImages.forEach(image => {
-            const key = `${image.folder}${image.src}`;
-            if (!seen.has(key)) {
-                seen.add(key);
-                images.push(image);
-            }
-        });
-    } catch (error) {
-        console.warn('Failed to load images from GitHub folder listings:', error);
-    }
-
-    window.galleryImageCount = images.length;
-    console.info('Gallery total images after merge:', images.length);
-    return images;
+function openArt(index, button) { opener = button; showArt(index); dialog.showModal(); $('#close').focus(); }
+full.addEventListener('load', () => { full.hidden = false; $('#image-status').textContent = ''; });
+full.addEventListener('error', () => { $('#image-status').textContent = '这张画暂时没有加载成功。'; $('#image-retry').hidden = false; });
+$('#image-retry').addEventListener('click', () => { full.removeAttribute('src'); showArt(current); });
+$('#close').addEventListener('click', () => dialog.close());
+dialog.addEventListener('close', () => opener?.focus());
+dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
+$('#previous').addEventListener('click', () => showArt(current - 1));
+$('#next').addEventListener('click', () => showArt(current + 1));
+dialog.addEventListener('keydown', e => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); showArt(current + (e.key === 'ArrowLeft' ? -1 : 1)); } });
+let touch;
+full.addEventListener('touchstart', e => { touch = [e.changedTouches[0].clientX, e.changedTouches[0].clientY]; }, {passive:true});
+full.addEventListener('touchend', e => { if (!touch) return; const dx=e.changedTouches[0].clientX-touch[0], dy=e.changedTouches[0].clientY-touch[1]; if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)) showArt(current+(dx<0?1:-1)); touch=null; }, {passive:true});
+$('#more').addEventListener('click', appendBatch); $('#retry').addEventListener('click', loadGallery);
+// Music is independent of gallery loading and requested only after opening the player.
+const audio = $('#audio'); let tracks = [], track = 0, musicLoading = false, musicLoaded = false; const localUrls = [];
+function selectTrack(index, play = true) {
+  if (!tracks.length) return;
+  track = (index + tracks.length) % tracks.length;
+  audio.src = tracks[track].src; $('#track-name').textContent = tracks[track].name;
+  if (play) audio.play().catch(() => { $('#track-name').textContent = '请点击播放器播放按钮。'; });
 }
-
-document.addEventListener('DOMContentLoaded', async () => {
-    const images = await loadImages();
-    initGallery(images);
-    initLightbox();
-    initMusic();
+$('#music').addEventListener('toggle', async () => {
+  if (!$('#music').open || musicLoaded || musicLoading) return;
+  musicLoading = true;
+  try {
+    const r = await fetch('media/playlist.json'); if (!r.ok) throw new Error();
+    const list = await r.json();
+    const remote = list.map(t => typeof t === 'string' ? {name:t.replace(/\.[^.]+$/, ''),src:'media/'+encodeURIComponent(t)} : t);
+    tracks.push(...remote); musicLoaded = true; if (!audio.getAttribute('src')) selectTrack(0, false);
+  } catch { $('#track-name').textContent = '播放清单暂不可用，可以选择本地歌曲。'; }
+  finally { musicLoading = false; }
 });
-
-// Gallery
-function initGallery(images) {
-    const grid = document.querySelector('.gallery-grid');
-
-    function appendImage({ folder, src }) {
-        const img = document.createElement('img');
-        img.src = folder + src;
-        img.alt = src;
-        img.dataset.full = folder + src;
-        img.className = 'gallery-image';
-        img.loading = 'lazy';
-        grid.appendChild(img);
-    }
-
-    images.forEach(appendImage);
-}
-
-// Lightbox modal
-function initLightbox() {
-    const lightbox = document.getElementById('lightbox');
-    const img = document.querySelector('.lightbox-image');
-    let idx = -1;
-    let touchStart = 0;
-
-    function getImages() {
-        return Array.from(document.querySelectorAll('.gallery-image'));
-    }
-
-    function open(index) {
-        const allImg = getImages();
-        if (!allImg[index]) return;
-        idx = index;
-        img.src = allImg[index].dataset.full;
-        img.onerror = () => {
-            img.style.display = 'none';
-            const retry = document.createElement('button');
-            retry.textContent = 'Retry';
-            retry.style.cssText = 'padding: 1rem; font-size: 1rem; cursor: pointer;';
-            retry.onclick = () => open(idx);
-            lightbox.appendChild(retry);
-        };
-        img.onload = () => {
-            img.style.display = 'block';
-            const retry = lightbox.querySelector('button');
-            if (retry) retry.remove();
-        };
-        lightbox.classList.add('active');
-    }
-
-    function close() {
-        lightbox.classList.remove('active');
-        img.onerror = null;
-        img.onload = null;
-        const retry = lightbox.querySelector('button');
-        if (retry) retry.remove();
-    }
-
-    function move(step) {
-        if (!lightbox.classList.contains('active')) return;
-        const allImg = getImages();
-        open((idx + step + allImg.length) % allImg.length);
-    }
-
-    document.addEventListener('click', e => {
-        if (e.target.classList.contains('gallery-image')) {
-            open(getImages().indexOf(e.target));
-        }
-        if (e.target === lightbox) close();
-    });
-
-    document.querySelector('.lightbox-close').addEventListener('click', close);
-
-    // Swipe detection for mobile
-    lightbox.addEventListener('touchstart', e => {
-        touchStart = e.changedTouches[0].clientX;
-    }, false);
-
-    lightbox.addEventListener('touchend', e => {
-        const touchEnd = e.changedTouches[0].clientX;
-        const diff = touchStart - touchEnd;
-        if (Math.abs(diff) > 50) {
-            move(diff > 0 ? 1 : -1);
-        }
-    }, false);
-
-    document.addEventListener('keydown', e => {
-        if (!lightbox.classList.contains('active')) return;
-        if (e.key === 'Escape') close();
-        if (['ArrowLeft', 'ArrowUp'].includes(e.key)) move(-1);
-        if (['ArrowRight', 'ArrowDown'].includes(e.key)) move(1);
-    });
-}
-
-// Music player
-function initMusic() {
-    const audio = document.getElementById('background-music');
-    const btn = document.getElementById('music-toggle');
-    const prev = document.getElementById('prev-track');
-    const next = document.getElementById('next-track');
-    const rand = document.getElementById('random-track');
-    const upload = document.getElementById('upload-track');
-
-    if (!audio || !btn) return;
-
-    let playlist = [];
-    let current = 0;
-
-    const isAudio = f => ['mp3', 'wav', 'ogg', 'm4a', 'aac'].includes(f.split('.').pop().toLowerCase());
-    const play = (i) => {
-        if (!playlist.length || i < 0 || i >= playlist.length) return;
-        current = i;
-        audio.src = playlist[i].src;
-        audio.play().catch(() => {});
-        btn.textContent = 'Pause Music';
-    };
-
-    btn.addEventListener('click', () => {
-        audio.paused ? audio.play() : audio.pause();
-    });
-
-    audio.addEventListener('play', () => (btn.textContent = 'Pause Music'));
-    audio.addEventListener('pause', () => (btn.textContent = 'Play Music'));
-    audio.addEventListener('ended', () => play((current + 1) % playlist.length));
-    audio.addEventListener('error', () => play((current + 1) % playlist.length));
-
-    prev?.addEventListener('click', () => play((current - 1 + playlist.length) % playlist.length));
-    next?.addEventListener('click', () => play((current + 1) % playlist.length));
-    rand?.addEventListener('click', () => play(Math.floor(Math.random() * playlist.length)));
-
-    upload?.addEventListener('change', function() {
-        Array.from(this.files).forEach(f => {
-            if (f.type.startsWith('audio/')) {
-                playlist.push({ name: f.name.replace(/\.[^.]+$/, ''), src: URL.createObjectURL(f) });
-            }
-        });
-    });
-
-    fetch(`media/playlist.json?v=${Date.now()}`)
-        .then(r => r.json())
-        .then(tracks => {
-            if (!Array.isArray(tracks)) return;
-            playlist = tracks
-                .map(t => typeof t === 'string' ? { name: t.replace(/\.[^.]+$/, ''), src: `media/${t}` } : t)
-                .filter(t => isAudio(t.src));
-            if (playlist.length) audio.src = playlist[0].src;
-        })
-        .catch(() => {});
-}
-
-
+$('#prev-track').addEventListener('click', () => selectTrack(track-1));
+$('#next-track').addEventListener('click', () => selectTrack(track+1));
+$('#random-track').addEventListener('click', () => selectTrack(Math.floor(Math.random()*tracks.length)));
+audio.addEventListener('ended', () => selectTrack(track+1));
+audio.addEventListener('error', () => { $('#track-name').textContent = '歌曲加载失败，请手动切换下一首。'; });
+$('#upload-track').addEventListener('change', e => {
+  for (const f of e.target.files) if(f.type.startsWith('audio/')) { const src=URL.createObjectURL(f); localUrls.push(src); tracks.push({name:f.name,src}); }
+  if (!audio.getAttribute('src')) selectTrack(0, false);
+});
+window.addEventListener('pagehide', () => localUrls.forEach(url => URL.revokeObjectURL(url)));
+loadGallery();
