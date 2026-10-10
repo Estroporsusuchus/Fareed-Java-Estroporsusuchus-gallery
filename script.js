@@ -14,10 +14,7 @@ function appendBatch() {
     img.alt = art.alt; img.loading = i < 3 ? 'eager' : 'lazy'; img.decoding = 'async';
     img.srcset = art.small.width < art.thumb.width ? `${art.small.src} ${art.small.width}w, ${art.thumb.src} ${art.thumb.width}w` : `${art.thumb.src} ${art.thumb.width}w`;
     img.sizes = '(max-width: 480px) 90vw, (max-width: 800px) 44vw, 30vw'; img.src = art.thumb.src;
-    const caption = document.createElement('span'); caption.className = 'art-caption';
-    const number = document.createElement('span'); number.textContent = String(i + 1).padStart(3, '0');
-    const hint = document.createElement('span'); hint.textContent = '查看画作 ↗'; caption.append(number, hint);
-    button.append(img, caption); button.addEventListener('click', () => openArt(i, button));
+    button.append(img); button.addEventListener('click', () => openArt(i, button));
     fragment.append(button);
   }
   $('#gallery').append(fragment); shown = end;
@@ -68,21 +65,33 @@ function selectTrack(index, play = true) {
   audio.src = tracks[track].src; $('#track-name').textContent = tracks[track].name;
   if (play) audio.play().catch(() => { $('#track-name').textContent = '请点击播放器播放按钮。'; });
 }
-$('#music').addEventListener('toggle', async () => {
-  if (!$('#music').open || musicLoaded || musicLoading) return;
-  musicLoading = true;
-  try {
-    const r = await fetch('media/playlist.json'); if (!r.ok) throw new Error();
-    const list = await r.json();
-    const remote = list.map(t => typeof t === 'string' ? {name:t.replace(/\.[^.]+$/, ''),src:'media/'+encodeURIComponent(t)} : t);
-    tracks.push(...remote); musicLoaded = true; if (!audio.getAttribute('src')) selectTrack(0, false);
-  } catch { $('#track-name').textContent = '播放清单暂不可用，可以选择本地歌曲。'; }
-  finally { musicLoading = false; }
+let loadingMusic;
+async function loadMusic() {
+  if (musicLoaded) return;
+  if (loadingMusic) return loadingMusic;
+  loadingMusic = (async () => {
+    try {
+      const r = await fetch('media/playlist.json'); if (!r.ok) throw new Error();
+      const list = await r.json();
+      tracks.push(...list.map(t => typeof t === 'string' ? {name:t.replace(/\.[^.]+$/, ''),src:'media/'+encodeURIComponent(t)} : t));
+      musicLoaded = true;
+      if (!audio.getAttribute('src')) selectTrack(0, false);
+    } catch { $('#track-name').textContent = '播放清单暂不可用，可以选择本地歌曲。'; }
+    finally { loadingMusic = null; }
+  })();
+  return loadingMusic;
+}
+$('#music-toggle').addEventListener('click', async () => {
+  if (!audio.paused) { audio.pause(); return; }
+  await loadMusic();
+  if (audio.getAttribute('src')) audio.play().catch(() => { $('#track-name').textContent = '请重试播放。'; });
 });
-$('#prev-track').addEventListener('click', () => selectTrack(track-1));
-$('#next-track').addEventListener('click', () => selectTrack(track+1));
-$('#random-track').addEventListener('click', () => selectTrack(Math.floor(Math.random()*tracks.length)));
-audio.addEventListener('ended', () => selectTrack(track+1));
+audio.addEventListener('play', () => { $('#music-toggle').textContent = 'Pause Music'; });
+audio.addEventListener('pause', () => { $('#music-toggle').textContent = 'Play Music'; });
+$('#prev-track').addEventListener('click', async () => { await loadMusic(); selectTrack(track-1); });
+$('#next-track').addEventListener('click', async () => { await loadMusic(); selectTrack(track+1); });
+$('#random-track').addEventListener('click', async () => { await loadMusic(); selectTrack(Math.floor(Math.random()*tracks.length)); });
+audio.addEventListener('ended', async () => { await loadMusic(); selectTrack(track+1); });
 audio.addEventListener('error', () => { $('#track-name').textContent = '歌曲加载失败，请手动切换下一首。'; });
 $('#upload-track').addEventListener('change', e => {
   for (const f of e.target.files) if(f.type.startsWith('audio/')) { const src=URL.createObjectURL(f); localUrls.push(src); tracks.push({name:f.name,src}); }
