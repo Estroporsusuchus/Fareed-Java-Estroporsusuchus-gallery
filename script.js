@@ -1,7 +1,33 @@
 'use strict';
 const $ = s => document.querySelector(s);
 const batch = 24;
-let works = [], shown = 0, current = 0, opener;
+let allWorks = [], works = [], shown = 0, current = 0, opener;
+function preference(key, fallback) { try { return localStorage.getItem(key) || fallback; } catch { return fallback; } }
+function remember(key, value) { try { localStorage.setItem(key, value); } catch {} }
+let selectedVersion = preference('furina-version', 'v1') === 'v2' ? 'v2' : 'v1';
+function setTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  $('#theme-toggle').textContent = theme === 'light' ? '切换蓝黑' : '切换浅色';
+  remember('furina-theme', theme);
+}
+setTheme(preference('furina-theme', 'dark') === 'light' ? 'light' : 'dark');
+$('#theme-toggle').addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'));
+function selectVersion(version) {
+  if (dialog.open) dialog.close();
+  selectedVersion = version; remember('furina-version', version);
+  works = allWorks.filter(art => art.version === version);
+  shown = 0; $('#gallery').replaceChildren();
+  document.querySelectorAll('[data-version]').forEach(button => {
+    button.disabled = false;
+    button.setAttribute('aria-pressed', String(button.dataset.version === version));
+    const count = allWorks.filter(art => art.version === button.dataset.version).length;
+    button.textContent = `${button.dataset.version.toUpperCase()} · ${count} 张`;
+  });
+  $('#count').textContent = `${version.toUpperCase()} · ${version === 'v1' ? '原来的画作' : '新的画作'} · ${works.length} 幅`;
+  $('#status').textContent = works.length ? '' : '新的故事，即将在这里开始。';
+  appendBatch();
+}
+document.querySelectorAll('[data-version]').forEach(button => button.addEventListener('click', () => selectVersion(button.dataset.version)));
 const dialog = $('#lightbox'), full = $('#full-image');
 function appendBatch() {
   const fragment = document.createDocumentFragment();
@@ -28,9 +54,7 @@ async function loadGallery() {
     if (!response.ok) throw new Error('manifest');
     const data = await response.json();
     if (!Array.isArray(data) || data.some(x => !x.thumb?.src || !x.full?.src || !x.small?.src)) throw new Error('format');
-    works = data; shown = 0; $('#gallery').replaceChildren();
-    $('#count').textContent = `${works.length} 幅画作`;
-    $('#status').textContent = works.length ? '' : '新的故事，即将在这里开始。'; appendBatch();
+    allWorks = data; selectVersion(selectedVersion);
   } catch {
     $('#status').textContent = '暂时无法读取画作，请重试。'; $('#count').textContent = ''; $('#retry').hidden = false;
   }

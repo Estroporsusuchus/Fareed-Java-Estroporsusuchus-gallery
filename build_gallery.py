@@ -12,11 +12,15 @@ def build(root=ROOT):
     files = sorted((p for p in original.rglob('*') if p.is_file() and p.suffix.lower() in SUPPORTED), key=lambda p: p.relative_to(original).as_posix().casefold())
     if not files:
         raise SystemExit('No images found in originals/. Add images before building.')
+    config_path = root / 'collections.json'
+    config = json.loads(config_path.read_text()) if config_path.exists() else {}
+    v1 = set(config.get('v1', []))
+    excluded = set(config.get('excluded', []))
     # Validate all originals before publishing a new manifest.
     unique, seen = [], set()
     for path in files:
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
-        if digest in seen:
+        if digest in seen or digest in excluded:
             continue
         with Image.open(path) as img:
             img.load()
@@ -40,7 +44,7 @@ def build(root=ROOT):
                     variant.save(target, 'WEBP', quality=quality, method=6)
                 with Image.open(target) as variant:
                     sizes[kind] = {'src': 'assets/' + name, 'width': variant.width, 'height': variant.height}
-            entries.append({'id': digest, 'alt': '芙宁娜画廊作品', **sizes})
+            entries.append({'id': digest, 'alt': '芙宁娜画廊作品', 'version': 'v1' if digest in v1 else 'v2', **sizes})
     # New works first, existing works keep their previous order.
     order_path = root / 'order.json'
     previous = json.loads(order_path.read_text()) if order_path.exists() else []

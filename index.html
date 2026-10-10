@@ -33,6 +33,13 @@
         <section id="paintings-gallery" class="gallery-section">
             <h2 style="text-align: center;">芙宁娜的画廊</h2>
             <p>记录芙宁娜与奇妙世界相遇的每一幕。</p>
+            <div class="gallery-toolbar">
+                <div class="versions" role="group" aria-label="选择画册">
+                    <button type="button" data-version="v1" aria-pressed="true" disabled>V1 · 原来的画作</button>
+                    <button type="button" data-version="v2" aria-pressed="false" disabled>V2 · 新的画作</button>
+                </div>
+                <button id="theme-toggle" type="button">切换浅色</button>
+            </div>
             <p id="count" aria-live="polite"></p><p id="status" role="status">画作加载中…</p><button id="retry" hidden>重新加载</button><div id="gallery" class="gallery-grid"></div><div class="more-wrap"><button id="more" hidden>加载更多</button><p id="progress"></p></div>
         </section>
     </main>
