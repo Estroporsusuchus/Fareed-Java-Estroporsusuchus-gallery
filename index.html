@@ -1,58 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paintings - Estroporsusuchus Gallery</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#102f46">
+<meta name="description" content="献给芙宁娜的画廊。收藏她与奇妙世界相遇的每一幕。">
+<title>芙宁娜的画廊 · Furina Gallery</title>
+<link rel="stylesheet" href="styles.css"><script src="script.js" defer></script>
 </head>
 <body>
-    <header class="header-top">
-        <div class="header-container">
-            <div class="logo">🦕</div>
-            <div class="audio-control">
-                <audio id="background-music" controls>
-                    <source src="media/last summer whisper .mp3" type="audio/mpeg">
-                    Your browser does not support the audio element.
-                </audio>
-                <div class="audio-actions">
-                    <button id="music-toggle" type="button">Play Music</button>
-                    <button id="prev-track" type="button">Prev</button>
-                    <button id="next-track" type="button">Next</button>
-                    <button id="random-track" type="button">Random Track</button>
-                    <label class="upload-label">
-                        Upload song
-                        <input id="upload-track" type="file" accept="audio/*" multiple title="Upload audio files" />
-                    </label>
-                </div>
-            </div>
-        </div>
-    </header>
-    
-    <main id="paintings">
-        <section id="paintings-gallery" class="gallery-section">
-            <h2 style="text-align: center;">Paintings</h2>
-            <p>A curated collection of artwork featuring adventure of furina the Regina of All Waters with dinosaurs, marine reptiles, and other fascinating creatures from Earth's ancient past.</p>
-            <div class="gallery-grid"></div>
-        </section>
-    </main>
-    
-    <!-- Lightbox modal -->
-    <div id="lightbox" class="lightbox">
-        <span class="lightbox-close">&times;</span>
-        <img class="lightbox-image" src="" alt="">
-        <div class="lightbox-info"></div>
-    </div>
-    <footer>
-        <p>All website content © Your Name.</p>
-        <div class="social-links">
-            <a href="#">Bluesky</a>
-            <a href="#">Facebook</a>
-            <a href="#">Instagram</a>
-            <a href="#">Amazon</a>
-            <a href="#">Patreon</a>
-        </div>
-    </footer>
-    <script src="script.js"></script>
-</body>
-</html>
+<header class="topbar"><a class="brand" href="./" aria-label="芙宁娜画廊首页"><span class="emblem" aria-hidden="true">✦</span> FURINA <span class="brand-sub">GALLERY</span></a><a href="#collection">欣赏画作 <span aria-hidden="true">↘</span></a></header>
+<main>
+<section class="intro"><p class="eyebrow">A GALLERY FOR FURINA</p><h1>故事落幕，<br>奇遇<span>未完。</span></h1><p class="intro-copy">献给芙宁娜。<br>让每一次相遇，都留在画里。</p><div class="intro-bottom"><a href="#collection">走进她的世界 <span aria-hidden="true">↓</span></a><span>FAREED’S COLLECTION</span></div><span class="watermark" aria-hidden="true">✧</span></section>
+<section id="collection" aria-labelledby="collection-title"><div class="section-heading"><div><p class="eyebrow">THE COLLECTION</p><h2 id="collection-title">属于她的每一幕</h2></div><p id="count" aria-live="polite">正在整理画作…</p></div><p id="status" role="status">画作加载中…</p><button id="retry" hidden>重新加载</button><div id="gallery" class="gallery"></div><div class="more-wrap"><button id="more" hidden>再看一些 <span aria-hidden="true">＋</span></button><p id="progress"></p></div></section>
+</main>
+<footer><div><span class="footer-title">Furina Gallery</span><p>献给芙宁娜，与每一个热爱她的你。</p></div><details id="music"><summary>♫ 为这一刻配乐</summary><audio id="audio" controls preload="none" aria-label="背景音乐"></audio><div class="music-actions"><button id="prev-track">上一首</button><button id="next-track">下一首</button><button id="random-track">随机</button><label>本地歌曲<input id="upload-track" type="file" accept="audio/*" multiple></label></div><p id="track-name"></p></details></footer>
+<dialog id="lightbox" aria-label="查看画作"><button id="close" class="close" aria-label="关闭大图">×</button><button id="previous" class="arrow previous" aria-label="上一张">‹</button><div class="art-view"><img id="full-image" alt=""><p id="image-status" role="status"></p><button id="image-retry" hidden>重新加载图片</button><p id="image-position"></p><a id="download" target="_blank" rel="noopener">打开高清图 ↗</a></div><button id="next" class="arrow next" aria-label="下一张">›</button></dialog>
+<noscript>请开启 JavaScript 以浏览画廊。</noscript>
+</body></html>
