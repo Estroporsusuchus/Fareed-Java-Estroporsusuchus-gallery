@@ -8,6 +8,15 @@ ROOT = Path(__file__).resolve().parent
 SUPPORTED = {'.jpg', '.jpeg', '.png', '.webp', '.gif'}
 
 def build(root=ROOT):
+    halls_path = root / 'exhibitions.json'
+    if halls_path.exists():
+        halls = json.loads(halls_path.read_text())
+        assigned = {}
+        for hall in halls:
+            for art_id in hall['artworks']:
+                if art_id in assigned:
+                    raise SystemExit(f'Duplicate exhibit in {assigned[art_id]} and {hall["id"]}: {art_id}')
+                assigned[art_id] = hall['id']
     original = root / 'originals'
     files = sorted((p for p in original.rglob('*') if p.is_file() and p.suffix.lower() in SUPPORTED), key=lambda p: p.relative_to(original).as_posix().casefold())
     if not files:
@@ -53,7 +62,7 @@ def build(root=ROOT):
     order = [e['id'] for e in entries if e['id'] not in old] + [i for i in previous if i in lookup]
     entries = [lookup[i] for i in order]
     order_path.write_text(json.dumps(order, indent=2) + '\n')
-    for name in ['index.html', 'styles.css', 'script.js']:
+    for name in ['index.html', 'styles.css', 'script.js', 'exhibition.js', 'exhibitions.json', 'literature.json']:
         shutil.copy2(root / name, dist / name)
     media = root / 'media'
     if media.exists():
