@@ -1,0 +1,43 @@
+[
+  {
+    "id": "followed-the-rain",
+    "title": "The Girl Who Followed the Rain",
+    "subtitle": "随雨而行的女孩",
+    "intro": "海边山丘上的一段传说。",
+    "language": "en",
+    "stanzas": [
+      "Upon a hill beside the sea,\nWhere silver waters gleam,\nA little maiden wandered free,\nAs though within a dream.",
+      "Her hair was pale as winter light,\nHer eyes of azure hue;\nShe walked beneath the falling night,\nWhere lonely wildflowers grew.",
+      "They said she laughed when thunder cried,\nAnd danced when tempests came;\nYet none could tell what dreams she'd hide,\nOr why she feared the flame.",
+      "One evening, when the stars were gone,\nShe heard a distant call;\nAnd through the mist before the dawn,\nShe passed the garden wall.",
+      "The rain had washed the winding track,\nThe sea was dark and deep;\nAnd though the winds called, “Turn you back,”\nShe had no wish to sleep.",
+      "At last she reached the cliff's high stone,\nWhere restless waters lay;\nAnd there she stood, so still, alone,\nUntil the break of day.",
+      "But when the morning touched the shore,\nNo footprints marked the sand;\nThey searched the cliffs for evermore,\nYet found no trace of hand.",
+      "And still, when storms approach the bay,\nThe fishermen declare\nA maiden walks the cliffs at day,\nWith silver in her hair.",
+      "She sings no song of grief or fear,\nNor asks the sea for rest;\nBut those who wander lost may hear\nHer voice beyond the west.",
+      "And some believe she never fell,\nNor vanished in the foam;\nShe merely followed, none can tell,\nA road that led her home."
+    ],
+    "artworks": []
+  },
+  {
+    "id": "lamp-upon-the-hill",
+    "title": "The Lamp upon the Hill",
+    "subtitle": "山丘上的灯",
+    "intro": "雨停之后，一辆单车经过小镇。",
+    "language": "en",
+    "stanzas": [
+      "The rain had ceased at half-past five;\nThe gutters murmured still.\nShe wheeled her cycle from the gate\nAnd started down the hill.",
+      "Her coat was folded in the frame,\nHer sleeves above her wrist;\nThe lamps along the lower road\nWere yellow in the mist.",
+      "Below the bridge she found a boy\nWho watched the water run;\nHe held a loaf beneath his shirt\nAnd waited for someone.",
+      "“My sister said to meet her here;\nShe works beyond the square.”\nHe pointed where the evening wind\nHad stripped the branches bare.",
+      "She set her cycle by the wall\nAnd looked towards the town;\nThen took her coat from out the frame\nAnd wrapped him, bending down.",
+      "“Come, show me where your sister works.”\nShe let him lead the way;\nHer wheels went clicking at their heels\nBeside the narrow quay.",
+      "They found the shutters fastened tight,\nThe doorway dark and wet;\nHe stood upon the step a while.\n“She has not finished yet.”",
+      "She knocked upon the side-door twice;\nA bolt slid back within.\nA woman, white with flour and fear,\nCame out and drew him in.",
+      "The loaf had broken in his shirt;\nHe gathered every crumb.\nHis sister brushed his dripping hair\nAnd could not speak for some.",
+      "She turned to thank the waiting girl,\nBut heard, beyond the square,\nA little bell, a turning wheel—\nAnd found no person there.",
+      "Far up the hill a window shone;\nA kettle stirred to song.\nA coat hung dripping by the stove;\nIts sleeves were rather long."
+    ],
+    "artworks": []
+  }
+]

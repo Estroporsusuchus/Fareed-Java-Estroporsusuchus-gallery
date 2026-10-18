@@ -15,7 +15,7 @@ $('#theme-toggle').addEventListener('click', () => setTheme(document.documentEle
 function selectVersion(version) {
   if (dialog.open) dialog.close();
   selectedVersion = version; remember('furina-version', version);
-  works = allWorks.filter(art => art.version === version);
+  works = window.activeHall ? window.activeHall.artworks.map(id => allWorks.find(art => art.id === id)).filter(Boolean) : allWorks.filter(art => art.version === version);
   shown = 0; $('#gallery').replaceChildren();
   document.querySelectorAll('[data-version]').forEach(button => {
     button.disabled = false;
@@ -24,6 +24,7 @@ function selectVersion(version) {
     button.textContent = `${button.dataset.version.toUpperCase()} · ${count} 张`;
   });
   $('#count').textContent = `${version.toUpperCase()} · ${version === 'v1' ? '原来的画作' : '新的画作'} · ${works.length} 幅`;
+  if (window.activeHall) $('#count').textContent = `精选展出 · ${works.length} 幅`;
   $('#status').textContent = works.length ? '' : '新的故事，即将在这里开始。';
   appendBatch();
 }
@@ -54,9 +55,9 @@ async function loadGallery() {
     if (!response.ok) throw new Error('manifest');
     const data = await response.json();
     if (!Array.isArray(data) || data.some(x => !x.thumb?.src || !x.full?.src || !x.small?.src)) throw new Error('format');
-    allWorks = data; selectVersion(selectedVersion);
+    allWorks = data; await initializeMuseum(data);
   } catch {
-    $('#status').textContent = '暂时无法读取画作，请重试。'; $('#count').textContent = ''; $('#retry').hidden = false;
+    $('#paintings-gallery').hidden = false; $('#status').textContent = '暂时无法读取画作，请重试。'; $('#count').textContent = ''; $('#retry').hidden = false;
   }
 }
 function showArt(index) {

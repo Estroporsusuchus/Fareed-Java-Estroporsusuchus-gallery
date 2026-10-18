@@ -10,7 +10,7 @@
     <header class="header-top">
         <div class="header-container">
             <div class="logo">🦕</div>
-            <div class="audio-control">
+            <details class="music-drawer"><summary>音乐</summary><div class="audio-control">
                 <audio id="audio" controls preload="none">
                     Your browser does not support the audio element.
                 </audio>
@@ -25,21 +25,29 @@
                     </label>
                 </div>
                 <p id="track-name" role="status"></p>
-            </div>
+            </div></details>
         </div>
     </header>
     
+    <nav class="museum-nav" aria-label="展馆导航"><a class="brand" href="#home">芙宁娜的画廊</a><a href="#home">展厅入口</a><a href="#literature">文学馆</a><a href="#library">馆藏目录</a><button id="theme-toggle" type="button">切换浅色</button></nav>
     <main id="paintings">
-        <section id="paintings-gallery" class="gallery-section">
-            <h2 style="text-align: center;">芙宁娜的画廊</h2>
-            <p>记录芙宁娜与奇妙世界相遇的每一幕。</p>
+      <section id="museum-home" class="museum-wrap" hidden>
+        <p class="eyebrow">FURINA GALLERY</p><h1>与她相遇的每一幕</h1><p class="museum-lead">走进远古，走入旷野，也在寻常的一天里停留。</p>
+        <div id="hall-entrances" class="hall-entrances"></div>
+        <a class="literature-entrance" href="#literature"><span>第五展厅 · 文学馆</span><h2>画面之外，还有故事</h2><p>诗、短篇与尚未配图的片刻，都可以在这里停留。</p><strong>进入文学馆 →</strong></a>
+        <a class="collection-link" href="#library">查找馆藏 · V1 / V2 →</a>
+      </section>
+      <section id="literature-room" class="museum-wrap" hidden><p class="eyebrow">THE READING ROOM</p><h1>文学馆</h1><p class="museum-lead">有些故事先有文字，有些故事从一幅画开始。</p><div id="writing-list"></div></section>
+      <article id="reading-room" class="reading-room" hidden><a href="#literature">← 返回文学馆</a><p class="eyebrow">POETRY</p><h1 id="poem-title" tabindex="-1"></h1><p id="poem-subtitle"></p><div id="poem-body"></div><div id="poem-images"></div><nav id="poem-navigation" aria-label="篇目导航"></nav></article>
+        <section id="paintings-gallery" class="gallery-section" hidden>
+            <h1 id="gallery-title" tabindex="-1">馆藏目录</h1>
+            <p id="gallery-intro"></p><a class="back-to-halls" href="#home">← 返回展厅入口</a>
             <div class="gallery-toolbar">
                 <div class="versions" role="group" aria-label="选择画册">
                     <button type="button" data-version="v1" aria-pressed="true" disabled>V1 · 原来的画作</button>
                     <button type="button" data-version="v2" aria-pressed="false" disabled>V2 · 新的画作</button>
                 </div>
-                <button id="theme-toggle" type="button">切换浅色</button>
-            </div>
+                </div>
             <p id="count" aria-live="polite"></p><p id="status" role="status">画作加载中…</p><button id="retry" hidden>重新加载</button><div id="gallery" class="gallery-grid"></div><div class="more-wrap"><button id="more" hidden>加载更多</button><p id="progress"></p></div>
         </section>
     </main>
@@ -55,6 +63,6 @@
             <a href="#">Patreon</a>
         </div>
     </footer>
-    <script src="script.js"></script>
+    <script src="exhibition.js"></script><script src="script.js"></script>
 </body>
 </html>
