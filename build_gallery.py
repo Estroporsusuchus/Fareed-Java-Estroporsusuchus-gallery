@@ -17,6 +17,19 @@ def build(root=ROOT):
                 if art_id in assigned:
                     raise SystemExit(f'Duplicate exhibit in {assigned[art_id]} and {hall["id"]}: {art_id}')
                 assigned[art_id] = hall['id']
+    games_path = root / 'games.json'
+    if games_path.exists():
+        seen_games = set()
+        for game in json.loads(games_path.read_text()):
+            if game['id'] in seen_games:
+                raise SystemExit('Duplicate game ID: ' + game['id'])
+            seen_games.add(game['id'])
+            for key in ['path', 'cover']:
+                value = Path(game[key])
+                if value.is_absolute() or '..' in value.parts or not (root / value).exists():
+                    raise SystemExit('Invalid game asset: ' + game[key])
+            if not (root / game['path'] / 'index.html').is_file():
+                raise SystemExit('Missing game entry: ' + game['path'])
     original = root / 'originals'
     files = sorted((p for p in original.rglob('*') if p.is_file() and p.suffix.lower() in SUPPORTED), key=lambda p: p.relative_to(original).as_posix().casefold())
     if not files:
@@ -62,8 +75,11 @@ def build(root=ROOT):
     order = [e['id'] for e in entries if e['id'] not in old] + [i for i in previous if i in lookup]
     entries = [lookup[i] for i in order]
     order_path.write_text(json.dumps(order, indent=2) + '\n')
-    for name in ['index.html', 'styles.css', 'script.js', 'exhibition.js', 'exhibitions.json', 'literature.json']:
+    for name in ['index.html', 'styles.css', 'script.js', 'exhibition.js', 'exhibitions.json', 'literature.json', 'games.json']:
         shutil.copy2(root / name, dist / name)
+    games = root / 'games'
+    if games.exists():
+        shutil.copytree(games, dist / 'games', dirs_exist_ok=True, ignore=shutil.ignore_patterns('.DS_Store'))
     media = root / 'media'
     if media.exists():
         shutil.copytree(media, dist / 'media', dirs_exist_ok=True, ignore=shutil.ignore_patterns('.DS_Store'))
