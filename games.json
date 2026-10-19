@@ -1,0 +1,11 @@
+[
+  {
+    "id": "furina-runner",
+    "title": "芙与三角龙",
+    "englishTitle": "A Little Ride",
+    "description": "沿着林间小径，跳跃、低伏，向前出发。",
+    "genre": "跑酷",
+    "path": "games/furina-runner/",
+    "cover": "games/furina-runner/cover.webp"
+  }
+]

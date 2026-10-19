@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>芙与三角龙 · 游戏馆</title><link rel="stylesheet" href="style.css"><script src="theme.js"></script></head>
+<body><main>
+<header><a href="../../#games" class="wordmark">← 返回游戏馆</a><span class="edition">FURINA / LITTLE ADVENTURES</span></header>
+<section class="intro"><p class="eyebrow">A LITTLE RIDE, A LONG WAY TO GO.</p><h1>芙与三角龙</h1><p>芙与三角龙。带上礼帽，沿着小径跑一会儿。</p></section>
+<section class="game" aria-label="横向跑酷小游戏">
+<div class="game-top"><span class="trail">01 / 林间小径</span><div><span>速度 <b id="speed">1.00×</b></span><span>路程 <b id="score">0000</b></span><span>最远 <b id="best">0000</b></span></div></div>
+<div class="playfield"><canvas id="world" width="1080" height="350" tabindex="0" aria-label="空格或向上键跳跃，按住向下键低伏，P暂停"></canvas><div id="overlay" class="overlay"><p id="state-label">准备出发</p><h2 id="state-title">地面跳，低空躲。</h2><button id="start" disabled>正在准备…</button><p id="state-note">空格 / ↑ 跳跃 · 按住 ↓ 低伏</p></div></div>
+<div class="controls"><span>空格 / ↑ 跳跃 · 按住 ↓ / S 低伏 · P 暂停</span><div><button id="jump">跳跃 ↑</button><button id="duck" aria-pressed="false">按住低伏 ↓</button><button id="pause" disabled>暂停</button><button id="restart" disabled>重新开始</button></div></div><div class="feedback" hidden><span>动作：<b id="motion">待机</b></span><label><input id="debug" type="checkbox"> 显示判定框</label><span>仅身体参与判定，发梢、角尖和尾尖不算。</span></div><p id="announcement" class="sr-only" aria-live="polite"></p>
+</section>
+<footer><span>Furina Gallery · 游戏馆</span></footer>
+</main><script src="runner-core.js"></script><script src="runner-art.js"></script><script src="game.js"></script></body></html>
