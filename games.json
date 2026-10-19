@@ -7,5 +7,14 @@
     "genre": "跑酷",
     "path": "games/furina-runner/",
     "cover": "games/furina-runner/cover.webp"
+  },
+  {
+    "id": "furina-chess",
+    "title": "与芙对弈",
+    "englishTitle": "A Quiet Game",
+    "description": "白先黑后，慢慢想。",
+    "genre": "国际象棋",
+    "path": "games/furina-chess/",
+    "cover": "games/furina-chess/furina-chess-reference.jpg"
   }
 ]
