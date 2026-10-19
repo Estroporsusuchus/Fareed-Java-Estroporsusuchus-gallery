@@ -39,5 +39,37 @@
       "Far up the hill a window shone;\nA kettle stirred to song.\nA coat hung dripping by the stove;\nIts sleeves were rather long."
     ],
     "artworks": []
+  },
+  {
+    "id": "at-the-ferry",
+    "title": "At the Ferry",
+    "subtitle": "渡口",
+    "intro": "清冷的渡口，一次短暂的相遇。",
+    "language": "en",
+    "stanzas": [
+      "I met her by the ferry-side,\nBeneath the willow bough;\nHer silver hair fell past her cheek\nAs she bent to loose the prow.",
+      "The rope was stiff with last night’s cold;\nThe seats were dark with rain.\nA yellow leaf beneath the boat\nWas caught against the chain.",
+      "“She’s fast,” she said. “The water’s low.”\nShe laid the pole aside.\n“Will you take hold?” We pushed her clear,\nAnd held her at the side.",
+      "“You’ve crossed before?” I asked of her.\n“Once. We were three that day.”\nShe gathered up the trailing rope\nAnd put the coil away.",
+      "A moment, with her hand at rest,\nShe looked along the shore;\nThen set her bundle by her feet\nAnd reached to take the oar.",
+      "Her silver hair in loosened curls\nFell softly, with a sheen;\nShe drew it back beneath her coat\nAnd watched the space between.",
+      "The boat swung slowly from the bank;\nShe thanked me, bending low\nTo fit the oar against its pin\nAnd turn the narrow bow.",
+      "The willow stirred above my head;\nIts branches brushed the stream.\nShe passed beneath their broken shade,\nAnd through the morning gleam."
+    ],
+    "translation": {
+      "language": "zh-CN",
+      "title": "中文译文",
+      "stanzas": [
+        "我在渡口遇见她，\n就在低垂的柳枝下；\n银发从她脸颊旁垂落，\n当她俯身解开船头的系绳。",
+        "昨夜的寒气使缆绳发僵，\n座板被雨水浸得深暗；\n小船下面，一片黄叶\n卡在铁链旁边。",
+        "“搁住了，”她说，“水浅了。”\n她把长篙放到一旁。\n“能扶一把吗？”我们将船推离浅滩，\n扶稳在岸边。",
+        "“你以前渡过这里？”我问。\n“有一次。那天我们三个。”\n她收起拖在水里的绳子，\n把绳圈放好。",
+        "她的手停了一会儿，\n目光沿着河岸移去；\n随后把行囊放在脚边，\n伸手取过船桨。",
+        "银发松松地卷着，\n柔柔垂落，泛着微光；\n她把头发拢回外套里，\n望着船与岸之间渐开的水面。",
+        "小船慢慢转离河岸；\n她道了谢，俯下身，\n将船桨安进桨架，\n调转窄窄的船头。",
+        "头顶的柳枝轻轻摇动，\n梢头拂过流水；\n她驶过枝影断续的地方，\n进入清晨的微光。"
+      ]
+    },
+    "artworks": []
   }
 ]

@@ -11,7 +11,11 @@ async function initializeMuseum(artworks) {
     const link = node('a', '', 'hall-entrance'); link.href = '#hall/' + hall.id;
     const cover = lookup.get(hall.cover); if (cover) link.append(image(cover));
     const text = node('div', '', 'hall-description');
-    text.append(node('span', `展厅 ${String(i + 1).padStart(2, '0')}`, 'eyebrow'), node('h2', hall.title), node('p', hall.intro), node('span', `${hall.artworks.filter(id => lookup.has(id)).length} 幅精选 · 进入展厅 →`));
+    text.append(node('span', `展厅 ${String(i + 1).padStart(2, '0')}`, 'eyebrow'), node('h2', hall.title));
+    if (hall.englishTitle) { const title = node('p', hall.englishTitle, 'hall-english'); title.lang = 'en'; text.append(title); }
+    text.append(node('p', hall.intro));
+    if (hall.englishSubtitle) { const subtitle = node('p', hall.englishSubtitle, 'hall-subtitle'); subtitle.lang = 'en'; text.append(subtitle); }
+    text.append(node('span', `${hall.artworks.filter(id => lookup.has(id)).length} 幅精选 · 进入展厅 →`));
     link.append(text); entrances.append(link);
   });
   const list = document.querySelector('#writing-list'); list.replaceChildren();
@@ -32,7 +36,9 @@ async function initializeMuseum(artworks) {
     document.title = `${hall?.title || post?.title || (kind === 'literature' ? '文学馆' : kind === 'library' ? '馆藏目录' : '展厅入口')} · 芙宁娜的画廊`;
     if (view === 'paintings-gallery') {
       document.querySelector('#gallery-title').textContent = hall?.title || '馆藏目录';
+      document.querySelector('#gallery-english').textContent = hall?.englishTitle || '';
       document.querySelector('#gallery-intro').textContent = hall?.intro || '所有作品都在这里，按原有 V1 / V2 画册浏览。';
+      document.querySelector('#gallery-subtitle').textContent = hall?.englishSubtitle || '';
       document.querySelector('.versions').hidden = !!hall;
       selectVersion(selectedVersion);
     }
@@ -41,6 +47,13 @@ async function initializeMuseum(artworks) {
       document.querySelector('#poem-subtitle').textContent = post.subtitle;
       const body = document.querySelector('#poem-body'); body.replaceChildren(); body.lang = post.language || 'en';
       for (const stanza of post.stanzas || []) body.append(node('p', stanza, 'stanza'));
+      const translation = document.querySelector('#poem-translation'); translation.replaceChildren(); translation.hidden = !post.translation;
+      if (post.translation) {
+        translation.append(node('summary', post.translation.title || '中文译文'));
+        const translated = node('div', '', 'translation-body'); translated.lang = post.translation.language || 'zh-CN';
+        for (const stanza of post.translation.stanzas || []) translated.append(node('p', stanza, 'stanza'));
+        translation.append(translated);
+      }
       const pictures = document.querySelector('#poem-images'); pictures.replaceChildren();
       for (const id of post.artworks || []) { const art = lookup.get(id); if (art) { const a = node('a'); a.href = art.full.src; a.target = '_blank'; a.rel = 'noopener'; a.append(image(art)); pictures.append(a); } }
       const nav = document.querySelector('#poem-navigation'); nav.replaceChildren();
