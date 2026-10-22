@@ -13,7 +13,13 @@ def build(root=ROOT):
         halls = json.loads(halls_path.read_text())
         assigned = {}
         for hall in halls:
+            local_ids = set()
             for art_id in hall['artworks']:
+                if art_id in local_ids:
+                    raise SystemExit(f'Duplicate exhibit within {hall["id"]}: {art_id}')
+                local_ids.add(art_id)
+                if hall['id'] == 'featured':
+                    continue  # The only exhibition allowed to share works with a themed hall.
                 if art_id in assigned:
                     raise SystemExit(f'Duplicate exhibit in {assigned[art_id]} and {hall["id"]}: {art_id}')
                 assigned[art_id] = hall['id']

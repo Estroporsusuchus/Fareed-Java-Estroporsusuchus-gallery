@@ -13,9 +13,9 @@ async function initializeMuseum(artworks) {
     const text = node('div', '', 'hall-description');
     text.append(node('span', `展厅 ${String(i + 1).padStart(2, '0')}`, 'eyebrow'), node('h2', hall.title));
     if (hall.englishTitle) { const title = node('p', hall.englishTitle, 'hall-english'); title.lang = 'en'; text.append(title); }
-    text.append(node('p', hall.intro));
+    if (hall.intro) text.append(node('p', hall.intro));
     if (hall.englishSubtitle) { const subtitle = node('p', hall.englishSubtitle, 'hall-subtitle'); subtitle.lang = 'en'; text.append(subtitle); }
-    text.append(node('span', `${hall.artworks.filter(id => lookup.has(id)).length} 幅精选 · 进入展厅 →`));
+    text.append(node('span', `${hall.artworks.filter(id => lookup.has(id)).length} 幅作品 · 进入展厅 →`));
     link.append(text); entrances.append(link);
   });
   const list = document.querySelector('#writing-list'); list.replaceChildren();
@@ -44,11 +44,11 @@ async function initializeMuseum(artworks) {
     for (const name of ['museum-home', 'paintings-gallery', 'literature-room', 'reading-room', 'games-room']) document.getElementById(name).hidden = name !== view;
     document.querySelectorAll('.museum-nav a').forEach(a => { if (a.hash === '#' + hash) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
     window.activeHall = hall;
-    document.title = `${hall?.title || post?.title || (kind === 'games' ? '游戏馆' : kind === 'literature' ? '文学馆' : kind === 'library' ? '馆藏目录' : '展厅入口')} · 芙宁娜的画廊`;
+    document.title = `${hall?.title || post?.title || (kind === 'games' ? '游戏馆' : kind === 'literature' ? '文学馆' : kind === 'library' ? '馆藏目录' : '展厅入口')} · Furinart`;
     if (view === 'paintings-gallery') {
       document.querySelector('#gallery-title').textContent = hall?.title || '馆藏目录';
       document.querySelector('#gallery-english').textContent = hall?.englishTitle || '';
-      document.querySelector('#gallery-intro').textContent = hall?.intro || '所有作品都在这里，按原有 V1 / V2 画册浏览。';
+      document.querySelector('#gallery-intro').textContent = hall ? (hall.intro || '') : '所有作品都在这里，按原有 V1 / V2 画册浏览。';
       document.querySelector('#gallery-subtitle').textContent = hall?.englishSubtitle || '';
       document.querySelector('.versions').hidden = !!hall;
       selectVersion(selectedVersion);
