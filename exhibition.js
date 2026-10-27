@@ -19,10 +19,33 @@ async function initializeMuseum(artworks) {
     link.append(text); entrances.append(link);
   });
   const list = document.querySelector('#writing-list'); list.replaceChildren();
-  writings.forEach((post, i) => {
-    const link = node('a', '', 'writing-entry'); link.href = '#poem/' + post.id;
-    if (post.layout === 'illustrated') { const art = lookup.get(post.artworks?.[0]); if (art) link.append(image(art)); }
-    link.append(node('span', String(i + 1).padStart(2, '0'), 'eyebrow'), node('h2', post.title), node('p', post.subtitle), node('p', post.intro), node('span', '阅读 →')); list.append(link);
+  const displayedWritings = [...writings.filter(p => p.layout === 'illustrated'), ...writings.filter(p => p.layout !== 'illustrated')];
+  displayedWritings.forEach((post, i) => {
+    if (post.layout !== 'illustrated') {
+      const link = node('a', '', 'writing-entry'); link.href = '#poem/' + post.id;
+      link.append(node('span', String(i + 1).padStart(2, '0'), 'eyebrow'), node('h2', post.title), node('p', post.subtitle), node('p', post.intro), node('span', '阅读 →')); list.append(link);
+      return;
+    }
+    const entry = node('article', '', 'writing-entry catalog-poem'); entry.id = 'writing-' + post.id;
+    for (const id of post.artworks || []) {
+      const art = lookup.get(id); if (!art) continue;
+      const img = image(art); img.src = art.full.src; img.width = art.full.width; img.height = art.full.height; img.alt = post.title; entry.append(img);
+    }
+    entry.append(node('h2', post.title), node('p', post.subtitle, 'catalog-subtitle'), node('p', post.author || '', 'eyebrow'));
+    const original = node('div', '', 'catalog-original'); original.lang = post.language || 'en';
+    for (const stanza of post.stanzas || []) original.append(node('p', stanza, 'stanza'));
+    entry.append(original);
+    if (post.translation) {
+      const translated = node('div', '', 'catalog-translation'); translated.lang = post.translation.language || 'zh-CN';
+      translated.append(node('h3', post.translation.title || '中文译文'));
+      for (const stanza of post.translation.stanzas || []) translated.append(node('p', stanza, 'stanza'));
+      entry.append(translated);
+    }
+    if (post.source) {
+      const source = node('div', '', 'catalog-source'); source.append(node('p', post.source.note || ''));
+      const link = node('a', '原文出处 ↗'); link.href = post.source.url; link.target = '_blank'; link.rel = 'noopener'; source.append(link); entry.append(source);
+    }
+    list.append(entry);
   });
   const cabinets = document.querySelector('#game-cabinets'); cabinets.replaceChildren();
   games.forEach((game, i) => {
