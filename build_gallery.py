@@ -42,6 +42,8 @@ def build(root=ROOT):
         raise SystemExit('No images found in originals/. Add images before building.')
     config_path = root / 'collections.json'
     config = json.loads(config_path.read_text()) if config_path.exists() else {}
+    metadata_path = root / 'artwork-metadata.json'
+    metadata = json.loads(metadata_path.read_text()) if metadata_path.exists() else {}
     v1 = set(config.get('v1', []))
     excluded = set(config.get('excluded', []))
     # Validate all originals before publishing a new manifest.
@@ -72,7 +74,7 @@ def build(root=ROOT):
                     variant.save(target, 'WEBP', quality=quality, method=6)
                 with Image.open(target) as variant:
                     sizes[kind] = {'src': 'assets/' + name, 'width': variant.width, 'height': variant.height}
-            entries.append({'id': digest, 'alt': '芙宁娜画廊作品', 'version': 'v1' if digest in v1 else 'v2', **sizes})
+            entries.append({'id': digest, 'alt': metadata.get(digest, {}).get('title', '芙宁娜画廊作品'), **metadata.get(digest, {}), 'version': 'v1' if digest in v1 else 'v2', **sizes})
     # New works first, existing works keep their previous order.
     order_path = root / 'order.json'
     previous = json.loads(order_path.read_text()) if order_path.exists() else []

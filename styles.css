@@ -239,3 +239,5 @@ footer p {
 #museum-home .furinart-title{font-size:clamp(3.8rem,10vw,7.5rem);letter-spacing:-.035em;line-height:1.15;margin:1.5rem 0 3.5rem;font-weight:normal}#gallery-intro:empty{display:none}
 
 #museum-home .furinart-title{margin-bottom:.35rem}#museum-home .museum-subtitle{font-size:clamp(1.15rem,3vw,1.6rem);font-style:italic;letter-spacing:.06em;color:#b8c6d4;margin:0 0 3rem;padding:0}[data-theme="light"] #museum-home .museum-subtitle{color:#506779}
+
+.art-title{display:block;padding:.7rem 1rem;font:inherit;font-size:1rem;letter-spacing:.15em;text-align:center;color:inherit}

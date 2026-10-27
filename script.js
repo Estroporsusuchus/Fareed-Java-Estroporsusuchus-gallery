@@ -36,12 +36,14 @@ function appendBatch() {
   for (let i = shown; i < end; i++) {
     const art = works[i], button = document.createElement('button'), img = document.createElement('img');
     button.className = 'art-card'; button.type = 'button';
-    button.setAttribute('aria-label', `查看第 ${i + 1} 张画作`);
+    button.setAttribute('aria-label', art.title ? `查看《${art.title}》` : `查看第 ${i + 1} 张画作`);
     img.width = art.thumb.width; img.height = art.thumb.height;
     img.alt = art.alt; img.loading = i < 3 ? 'eager' : 'lazy'; img.decoding = 'async';
     img.srcset = art.small.width < art.thumb.width ? `${art.small.src} ${art.small.width}w, ${art.thumb.src} ${art.thumb.width}w` : `${art.thumb.src} ${art.thumb.width}w`;
     img.sizes = '(max-width: 480px) 90vw, (max-width: 800px) 44vw, 30vw'; img.src = art.thumb.src;
-    button.append(img); button.addEventListener('click', () => openArt(i, button));
+    button.append(img);
+    if (art.title) { const caption = document.createElement('span'); caption.className = 'art-title'; caption.textContent = art.title; button.append(caption); }
+    button.addEventListener('click', () => openArt(i, button));
     fragment.append(button);
   }
   $('#gallery').append(fragment); shown = end;
@@ -65,7 +67,7 @@ function showArt(index) {
   const art = works[current];
   $('#image-status').textContent = '高清画作加载中…'; $('#image-retry').hidden = true;
   full.hidden = true; full.alt = art.alt; full.src = art.full.src;
-  $('#image-position').textContent = `${current + 1} / ${works.length}`;
+  $('#image-position').textContent = `${art.title ? art.title + ' · ' : ''}${current + 1} / ${works.length}`;
   $('#download').href = art.full.src;
 }
 function openArt(index, button) { opener = button; showArt(index); dialog.showModal(); $('#close').focus(); }
