@@ -95,8 +95,9 @@
     ],
     "source": {
       "url": "https://www.gutenberg.org/cache/epub/12383/pg12383-images.html#:~:text=When%20at%20my%20feet%20the%20ground",
-      "note": "William Wordsworth，《序曲》1850 年版，第十四卷，登临斯诺登山段落节选。中文为本次试译。"
-    }
+      "note": "William Wordsworth，《序曲》1850 年版，第十四卷，登临斯诺登山段落节选。"
+    },
+    "showTranslation": false
   },
   {
     "id": "wandern",
@@ -121,7 +122,8 @@
     ],
     "source": {
       "url": "https://www.gutenberg.org/cache/epub/47651/pg47651-images.html",
-      "note": "《柯克斯通山隘》开篇八行；结尾省略后文。中文为试译。"
-    }
+      "note": "《柯克斯通山隘》开篇八行；结尾省略后文。"
+    },
+    "showTranslation": false
   }
 ]
