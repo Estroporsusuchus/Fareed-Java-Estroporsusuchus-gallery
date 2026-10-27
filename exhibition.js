@@ -1,7 +1,7 @@
 'use strict';
 window.activeHall = null;
 async function initializeMuseum(artworks) {
-  const read = async path => { const r = await fetch(path); if (!r.ok) throw new Error(path); return r.json(); };
+  const read = async path => { const r = await fetch(path, {cache: 'no-cache'}); if (!r.ok) throw new Error(path); return r.json(); };
   const [halls, writings, games] = await Promise.all([read('exhibitions.json'), read('literature.json'), read('games.json')]);
   const lookup = new Map(artworks.map(a => [a.id, a]));
   const node = (tag, text, className) => { const n = document.createElement(tag); if (text) n.textContent = text; if (className) n.className = className; return n; };
@@ -21,6 +21,7 @@ async function initializeMuseum(artworks) {
   const list = document.querySelector('#writing-list'); list.replaceChildren();
   writings.forEach((post, i) => {
     const link = node('a', '', 'writing-entry'); link.href = '#poem/' + post.id;
+    if (post.layout === 'illustrated') { const art = lookup.get(post.artworks?.[0]); if (art) link.append(image(art)); }
     link.append(node('span', String(i + 1).padStart(2, '0'), 'eyebrow'), node('h2', post.title), node('p', post.subtitle), node('p', post.intro), node('span', '阅读 →')); list.append(link);
   });
   const cabinets = document.querySelector('#game-cabinets'); cabinets.replaceChildren();
@@ -54,11 +55,15 @@ async function initializeMuseum(artworks) {
       selectVersion(selectedVersion);
     }
     if (post) {
+      const illustrated = post.layout === 'illustrated';
+      document.querySelector('#reading-room').classList.toggle('illustrated-reading', illustrated);
+      document.querySelector('#poem-author').textContent = post.author || '';
+      document.querySelector('#poem-author').hidden = !post.author;
       document.querySelector('#poem-title').textContent = post.title;
       document.querySelector('#poem-subtitle').textContent = post.subtitle;
       const body = document.querySelector('#poem-body'); body.replaceChildren(); body.lang = post.language || 'en';
       for (const stanza of post.stanzas || []) body.append(node('p', stanza, 'stanza'));
-      const translation = document.querySelector('#poem-translation'); translation.replaceChildren(); translation.hidden = !post.translation;
+      const translation = document.querySelector('#poem-translation'); translation.replaceChildren(); translation.hidden = !post.translation; translation.open = illustrated;
       if (post.translation) {
         translation.append(node('summary', post.translation.title || '中文译文'));
         const translated = node('div', '', 'translation-body'); translated.lang = post.translation.language || 'zh-CN';
@@ -66,7 +71,9 @@ async function initializeMuseum(artworks) {
         translation.append(translated);
       }
       const pictures = document.querySelector('#poem-images'); pictures.replaceChildren();
-      for (const id of post.artworks || []) { const art = lookup.get(id); if (art) { const a = node('a'); a.href = art.full.src; a.target = '_blank'; a.rel = 'noopener'; a.append(image(art)); pictures.append(a); } }
+      for (const id of post.artworks || []) { const art = lookup.get(id); if (art) { const a = node('a'); a.href = art.full.src; a.target = '_blank'; a.rel = 'noopener'; const img = image(art); if (illustrated) { img.src = art.full.src; img.removeAttribute('loading'); img.width = art.full.width; img.height = art.full.height; } a.append(img); pictures.append(a); } }
+      const source = document.querySelector('#poem-source'); source.replaceChildren();
+      if (post.source) { source.append(node('p', post.source.note || '')); const link = node('a', '原文出处 ↗'); link.href = post.source.url; link.target = '_blank'; link.rel = 'noopener'; source.append(link); }
       const nav = document.querySelector('#poem-navigation'); nav.replaceChildren();
       for (const next of writings.filter(p => p.id !== post.id)) { const link = node('a', next.title + ' →'); link.href = '#poem/' + next.id; nav.append(link); }
     }
