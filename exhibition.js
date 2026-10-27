@@ -29,7 +29,7 @@ async function initializeMuseum(artworks) {
     const entry = node('article', '', 'writing-entry catalog-poem'); entry.id = 'writing-' + post.id;
     for (const id of post.artworks || []) {
       const art = lookup.get(id); if (!art) continue;
-      const img = image(art); img.src = art.full.src; img.width = art.full.width; img.height = art.full.height; img.alt = post.title; entry.append(img);
+      const img = image(art); img.src = art.full.src; img.width = art.full.width; img.height = art.full.height; img.alt = post.title; const display = node('div', '', 'catalog-display'); const frame = node('div', '', 'catalog-frame'); const mat = node('div', '', 'catalog-mat'); mat.append(img); frame.append(mat); display.append(frame); entry.append(display);
     }
     entry.append(node('h2', post.title), node('p', post.subtitle, 'catalog-subtitle'), node('p', post.author || '', 'eyebrow'));
     const original = node('div', '', 'catalog-original'); original.lang = post.language || 'en';
