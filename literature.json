@@ -71,5 +71,57 @@
       ]
     },
     "artworks": []
+  },
+  {
+    "id": "light",
+    "title": "光",
+    "subtitle": "The Prelude · Book XIV",
+    "intro": "《序曲》第十四卷 · 斯诺登山节选",
+    "language": "en",
+    "author": "William Wordsworth",
+    "layout": "illustrated",
+    "stanzas": [
+      "When at my feet the ground appeared to brighten,\nAnd with a step or two seemed brighter still;\nNor was time given to ask or learn the cause,\nFor instantly a light upon the turf\nFell like a flash, and lo! as I looked up,\nThe Moon hung naked in a firmament\nOf azure without cloud, and at my feet\nRested a silent sea of hoary mist."
+    ],
+    "translation": {
+      "language": "zh-CN",
+      "title": "中文试译",
+      "stanzas": [
+        "脚下的地面仿佛渐渐亮了起来，\n又走一两步，便觉得更加明亮；\n还未来得及追问或弄清缘由，\n一道光忽然落在草地上，\n如闪电一掠；看啊，当我抬起头，\n月亮无遮无掩，悬在\n澄蓝无云的苍穹；而在我的脚下，\n静卧着一片灰白的雾海。"
+      ]
+    },
+    "artworks": [
+      "747da87743bbf6c14ab5cbe92aeb2501abc9abd12164b37b8ce8abfde08e13bb"
+    ],
+    "source": {
+      "url": "https://www.gutenberg.org/cache/epub/12383/pg12383-images.html#:~:text=When%20at%20my%20feet%20the%20ground",
+      "note": "William Wordsworth，《序曲》1850 年版，第十四卷，登临斯诺登山段落节选。中文为本次试译。"
+    }
+  },
+  {
+    "id": "wandern",
+    "title": "Wandern",
+    "subtitle": "The Pass of Kirkstone",
+    "intro": "柯克斯通山隘 · 开篇节选",
+    "language": "en",
+    "author": "William Wordsworth",
+    "layout": "illustrated",
+    "stanzas": [
+      "Within the mind strong fancies work,\nA deep delight the bosom thrills,\nOft as I pass along the fork\nOf these fraternal hills:\nWhere, save the rugged road, we find\nNo appanage of human kind,\nNor hint of man; if stone or rock\nSeem not his handy-work to mock …"
+    ],
+    "translation": {
+      "language": "zh-CN",
+      "title": "中文试译",
+      "stanzas": [
+        "心中，强烈的想象涌动，\n深深的欣悦震颤着胸怀，\n每当我穿行于\n这相依群山的分岔之间：\n在这里，除了一条崎岖的路，\n找不到任何属于人世的事物，\n也没有人的踪迹；除非那些山石\n仿佛正在摹仿人手的造作……"
+      ]
+    },
+    "artworks": [
+      "1d050ae02ab6465c46f5d866969f40f67be1a91049f70f503e0a0b0819670e4e"
+    ],
+    "source": {
+      "url": "https://www.gutenberg.org/cache/epub/47651/pg47651-images.html",
+      "note": "《柯克斯通山隘》开篇八行；结尾省略后文。中文为试译。"
+    }
   }
 ]
