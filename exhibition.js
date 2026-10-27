@@ -35,7 +35,7 @@ async function initializeMuseum(artworks) {
     const original = node('div', '', 'catalog-original'); original.lang = post.language || 'en';
     for (const stanza of post.stanzas || []) original.append(node('p', stanza, 'stanza'));
     entry.append(original);
-    if (post.translation) {
+    if (post.translation && post.showTranslation !== false) {
       const translated = node('div', '', 'catalog-translation'); translated.lang = post.translation.language || 'zh-CN';
       translated.append(node('h3', post.translation.title || '中文译文'));
       for (const stanza of post.translation.stanzas || []) translated.append(node('p', stanza, 'stanza'));
@@ -86,8 +86,8 @@ async function initializeMuseum(artworks) {
       document.querySelector('#poem-subtitle').textContent = post.subtitle;
       const body = document.querySelector('#poem-body'); body.replaceChildren(); body.lang = post.language || 'en';
       for (const stanza of post.stanzas || []) body.append(node('p', stanza, 'stanza'));
-      const translation = document.querySelector('#poem-translation'); translation.replaceChildren(); translation.hidden = !post.translation; translation.open = illustrated;
-      if (post.translation) {
+      const translation = document.querySelector('#poem-translation'); translation.replaceChildren(); translation.hidden = !post.translation || post.showTranslation === false; translation.open = illustrated;
+      if (post.translation && post.showTranslation !== false) {
         translation.append(node('summary', post.translation.title || '中文译文'));
         const translated = node('div', '', 'translation-body'); translated.lang = post.translation.language || 'zh-CN';
         for (const stanza of post.translation.stanzas || []) translated.append(node('p', stanza, 'stanza'));
