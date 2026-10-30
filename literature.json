@@ -125,5 +125,50 @@
       "note": "《柯克斯通山隘》开篇八行；结尾省略后文。"
     },
     "showTranslation": false
+  },
+  {
+    "id": "ancient-mariner",
+    "title": "古舟子咏",
+    "subtitle": "The Rime of the Ancient Mariner",
+    "intro": "风暴中的海洋，神秘而不可预测的力量。",
+    "author": "Samuel Taylor Coleridge",
+    "language": "en",
+    "layout": "illustrated",
+    "showTranslation": false,
+    "artworks": [
+      "de1da676743144c5a1bcfe493d7f33d7f3270f39829f7501a98c00b56860197a"
+    ],
+    "stanzas": [
+      "The upper air burst into life!\nAnd a hundred fire-flags sheen,\nTo and fro they were hurried about!\nAnd to and fro, and in and out,\nThe wan stars danced between.",
+      "And the coming wind did roar more loud,\nAnd the sails did sigh like sedge;\nAnd the rain poured down from one black cloud;\nThe Moon was at its edge."
+    ],
+    "source": {
+      "url": "https://www.gutenberg.org/cache/epub/151/pg151-images.html",
+      "note": "Part V · excerpt"
+    },
+    "creationNote": "巨大的少女伫立于风暴中的海洋，裙摆向左扬起，水流沿布料滴落。借鉴诗歌的超自然海洋意象；画面人物并非原诗中的角色。"
+  },
+  {
+    "id": "tide-rises-tide-falls",
+    "title": "潮起潮落",
+    "subtitle": "The Tide Rises, the Tide Falls",
+    "intro": "无尽的潮汐，时间的循环与生命的有限。",
+    "author": "Henry Wadsworth Longfellow",
+    "language": "en",
+    "layout": "illustrated",
+    "showTranslation": false,
+    "artworks": [
+      "99b1431793b781475ac6f835b7ef0b5a337981d3fc080a321c009737da653555"
+    ],
+    "stanzas": [
+      "The tide rises, the tide falls,\nThe twilight darkens, the curlew calls;\nAlong the sea-sands damp and brown\nThe traveller hastens toward the town,\n    And the tide rises, the tide falls.",
+      "Darkness settles on roofs and walls,\nBut the sea, the sea in the darkness calls;\nThe little waves, with their soft, white hands,\nEfface the footprints in the sands,\n    And the tide rises, the tide falls.",
+      "The morning breaks; the steeds in their stalls\nStamp and neigh, as the hostler calls;\nThe day returns, but nevermore\nReturns the traveller to the shore,\n    And the tide rises, the tide falls."
+    ],
+    "source": {
+      "url": "https://rpo.library.utoronto.ca/content/tide-rises-tide-falls",
+      "note": "Complete poem · 1880"
+    },
+    "creationNote": "纤细的少女独自站在海岸，面对汹涌海浪；通过人物与大海的尺度对比，呼应潮汐、消逝与时间。"
   }
 ]
